@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Literalar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9fa; color: #2d3748; }
+
+        .navbar { background-color: #ffffff; padding: 20px 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf2f7; }
+        .logo-text { font-size: 2.8rem; font-weight: 900; color: #1a202c; letter-spacing: -1.5px; text-decoration: none;}
+        .logo-text span { color: #f03e3e; }
+
+        .main-container { padding: 50px; max-width: 600px; margin: 0 auto; background: #fff; border-radius: 16px; margin-top: 40px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .section-title { font-size: 1.8rem; font-weight: 800; color: #1a202c; margin-bottom: 20px; text-align: center;}
+
+        .payment-method { border: 2px solid #edf2f7; border-radius: 8px; padding: 15px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; display: block;}
+        .payment-method:hover { border-color: #0b806b; background: #f0fdf4; }
+        .payment-method input { margin-right: 10px; transform: scale(1.2); }
+        .payment-method strong { font-size: 1.1rem; color: #2d3748; }
+
+        .btn-confirm { width: 100%; background-color: #0b806b; color: #fff; padding: 15px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; border: none; cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+        .btn-confirm:hover { background-color: #086b58; }
+        .btn-voltar { display: block; text-align: center; margin-top: 15px; color: #718096; text-decoration: none; font-weight: 600; }
+        .btn-voltar:hover { color: #1a202c; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo-text">Literalar<span>.</span></a>
+    </header>
+
+    <main class="main-container">
+        <h2 class="section-title">Escolha o Método de Pagamento</h2>
+        <p style="text-align: center; color: #718096; margin-bottom: 30px;">Você está finalizando a compra de {{ total_itens }} livro(s).</p>
+
+        <form action="/pagamento" method="POST">
+            <label class="payment-method">
+                <input type="radio" name="metodo_pagamento" value="Cartão de Crédito" required checked>
+                <strong>💳 Cartão de Crédito</strong>
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="metodo_pagamento" value="Pix">
+                <strong>💠 Pix (Desconto de 5%)</strong>
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="metodo_pagamento" value="Boleto Bancário">
+                <strong>📄 Boleto Bancário</strong>
+            </label>
+
+            <button type="submit" class="btn-confirm">Concluir Pagamento</button>
+        </form>
+        <a href="/carrinho" class="btn-voltar">Voltar para o Carrinho</a>
+    </main>
+</body>
+</html>

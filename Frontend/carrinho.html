@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Literalar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8f9fa; color: #2d3748; }
+
+        .navbar { background-color: #ffffff; padding: 20px 50px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf2f7; }
+        .brand { display: flex; flex-direction: column; }
+        .logo-container { text-decoration: none; }
+        .logo-text { font-size: 2.8rem; font-weight: 900; color: #1a202c; letter-spacing: -1.5px; line-height: 1; }
+        .logo-text span { color: #f03e3e; }
+
+        .btn-voltar { background-color: #edf2f7; color: #2d3748; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.2s; }
+        .btn-voltar:hover { background-color: #e2e8f0; }
+
+        .main-container { padding: 50px; max-width: 900px; margin: 0 auto; }
+        .section-title { font-size: 2rem; font-weight: 800; color: #1a202c; border-bottom: 2px solid #edf2f7; padding-bottom: 15px; margin-bottom: 30px; }
+
+        .cart-item { background: #fff; padding: 20px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #edf2f7; }
+        .cart-cover { width: 80px; height: 110px; object-fit: cover; border-radius: 6px; margin-right: 25px; }
+        .cart-info { flex: 1; } /* Empurra o botão de remover para a direita */
+        .cart-info h3 { font-size: 1.3rem; color: #1a202c; margin-bottom: 5px; }
+        .cart-info p { color: #718096; font-size: 1rem; }
+        .cart-info span { display: inline-block; margin-top: 10px; background-color: #e6fcf5; color: #0b806b; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+
+        .empty-state { text-align: center; padding: 80px 20px; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e0; }
+        .empty-state h2 { color: #1a202c; margin-bottom: 10px; font-size: 1.8rem;}
+        .empty-state p { color: #718096; font-size: 1.1rem; margin-bottom: 25px; }
+
+        .cart-summary { margin-top: 30px; padding-top: 25px; border-top: 2px solid #edf2f7; text-align: right; }
+        .btn-finalizar { background-color: #0b806b; color: #fff; padding: 15px 35px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; display: inline-block; transition: background 0.2s; border: none; cursor: pointer; text-decoration: none;}
+        .btn-finalizar:hover { background-color: #086b58; }
+
+        .btn-remover { background: #fee2e2; color: #e53e3e; border: none; padding: 10px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+        .btn-remover:hover { background: #fecaca; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand">
+            <a href="/" class="logo-container">
+                <div class="logo-text">Literalar<span>.</span></div>
+            </a>
+        </div>
+        <a href="/" class="btn-voltar">Continuar Comprando</a>
+    </header>
+
+    <main class="main-container">
+        <h2 class="section-title">Meu Carrinho ({{ total_carrinho|default(0) }} itens)</h2>
+
+        {% if livros_carrinho %}
+
+            {% for livro in livros_carrinho %}
+            <div class="cart-item">
+                <img class="cart-cover" src="{{ livro.capa }}" alt="Capa do livro">
+                <div class="cart-info">
+                    <h3>{{ livro.titulo }}</h3>
+                    <p>por {{ livro.autor }}</p>
+                    <span>{{ livro.categoria }}</span>
+                </div>
+                <form action="/remover/{{ livro.titulo }}" method="POST">
+                    <button type="submit" class="btn-remover">Remover</button>
+                </form>
+            </div>
+            {% endfor %}
+
+            <div class="cart-summary">
+                 <a href="/checkout" class="btn-finalizar">Ir para Pagamento</a>
+            </div>
+
+        {% else %}
+            <div class="empty-state">
+                <h2>Seu carrinho está vazio!</h2>
+                <p>Explore nosso catálogo e adicione os livros que deseja ler.</p>
+                <a href="/" style="background: #0b806b; color: #fff; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 10px;">Explorar Livros</a>
+            </div>
+        {% endif %}
+    </main>
+
+</body>
+</html>
