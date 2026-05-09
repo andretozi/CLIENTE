@@ -11,24 +11,32 @@ API_URL = "http://127.0.0.1:5000/api"
 def index():
     termo = request.form.get('termo_busca', '') if request.method == 'POST' else ""
 
-    # O Cliente "pede" os livros para a API
-    resp_livros = requests.get(f"{API_URL}/livros?termo={termo}")
-    livros = resp_livros.json() if resp_livros.status_code == 200 else []
+    try:
+        # Pede os dados para o Servidor (API)
+        resp_livros = requests.get(f"{API_URL}/livros", params={"termo": termo})
+        livros = resp_livros.json() if resp_livros.status_code == 200 else []
 
-    # O Cliente "pede" o carrinho para saber o total
-    resp_carrinho = requests.get(f"{API_URL}/carrinho")
-    carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+        resp_carrinho = requests.get(f"{API_URL}/carrinho")
+        carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    except Exception as e:
+        print(f"ERRO DE CONEXÃO COM O SERVIDOR: {e}")
+        livros = []
+        carrinho = []
 
     return render_template('index.html', livros=livros, termo_pesquisado=termo, total_carrinho=len(carrinho))
 
 
 @app.route('/categoria/<nome>')
 def categoria(nome):
-    resp_livros = requests.get(f"{API_URL}/categoria/{nome}")
-    livros = resp_livros.json() if resp_livros.status_code == 200 else []
+    try:
+        resp_livros = requests.get(f"{API_URL}/categoria/{nome}")
+        livros = resp_livros.json() if resp_livros.status_code == 200 else []
 
-    resp_carrinho = requests.get(f"{API_URL}/carrinho")
-    carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+        resp_carrinho = requests.get(f"{API_URL}/carrinho")
+        carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    except:
+        livros = []
+        carrinho = []
 
     return render_template('index.html', livros=livros, termo_pesquisado=f"Categoria: {nome}",
                            total_carrinho=len(carrinho))
@@ -36,29 +44,39 @@ def categoria(nome):
 
 @app.route('/adicionar/<titulo>', methods=['POST'])
 def adicionar(titulo):
-    # Envia um POST para a API adicionar
-    requests.post(f"{API_URL}/carrinho", json={"titulo": titulo})
+    try:
+        requests.post(f"{API_URL}/carrinho", json={"titulo": titulo})
+    except:
+        pass
     return redirect(url_for('index'))
 
 
 @app.route('/carrinho')
 def ver_carrinho():
-    resp_carrinho = requests.get(f"{API_URL}/carrinho")
-    carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    try:
+        resp_carrinho = requests.get(f"{API_URL}/carrinho")
+        carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    except:
+        carrinho = []
     return render_template('carrinho.html', livros_carrinho=carrinho, total_carrinho=len(carrinho))
 
 
 @app.route('/remover/<titulo>', methods=['POST'])
 def remover(titulo):
-    # Envia um DELETE para a API remover
-    requests.delete(f"{API_URL}/carrinho", json={"titulo": titulo})
+    try:
+        requests.delete(f"{API_URL}/carrinho", json={"titulo": titulo})
+    except:
+        pass
     return redirect(url_for('ver_carrinho'))
 
 
 @app.route('/checkout')
 def checkout():
-    resp_carrinho = requests.get(f"{API_URL}/carrinho")
-    carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    try:
+        resp_carrinho = requests.get(f"{API_URL}/carrinho")
+        carrinho = resp_carrinho.json() if resp_carrinho.status_code == 200 else []
+    except:
+        carrinho = []
 
     if not carrinho:
         return redirect(url_for('ver_carrinho'))
@@ -68,11 +86,12 @@ def checkout():
 @app.route('/pagamento', methods=['POST'])
 def pagamento():
     metodo = request.form.get('metodo_pagamento')
-    # Solicita para a API esvaziar o carrinho
-    requests.post(f"{API_URL}/carrinho/limpar")
+    try:
+        requests.post(f"{API_URL}/carrinho/limpar")
+    except:
+        pass
     return render_template('sucesso.html', metodo=metodo)
 
 
 if __name__ == '__main__':
-    # O Cliente roda na porta 5001 para não dar conflito com o Servidor
     app.run(port=5001, debug=True)
